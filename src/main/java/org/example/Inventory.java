@@ -38,15 +38,69 @@ public class Inventory {
     }
 
     public GameItem upgradeItem(String itemName, Rarity rarity) {
-        Rarity nextRarity = getNextRarity(rarity);
-        int requiredCount = (rarity == Rarity.EPIC || rarity == Rarity.EPIC_1) ? 2 : 3;
+        switch (rarity) {
+            case COMMON:
+                if (hasEnoughItem(itemName, Rarity.COMMON, 3)) {
+                    removeItem(itemName, Rarity.COMMON, 3);
+                    return new GameItem(itemName, Rarity.GREAT);
+                }
+                break;
+            case GREAT:
+                if (hasEnoughItem(itemName, Rarity.GREAT, 3)) {
+                    removeItem(itemName, Rarity.GREAT, 3);
+                    return new GameItem(itemName, Rarity.RARE);
+                }
+                break;
+            case RARE:
+                if (hasEnoughItem(itemName, Rarity.RARE, 3)) {
+                    removeItem(itemName, Rarity.RARE, 3);
+                    return new GameItem(itemName, Rarity.EPIC);
+                }
+                break;
+            case EPIC:
+                if (hasEnoughItem(itemName, Rarity.EPIC, 2)) {
+                    removeItem(itemName, Rarity.EPIC, 2);
+                    return new GameItem(itemName, Rarity.EPIC_1);
+                }
+                break;
+            case EPIC_1:
+                if (hasEnoughItem(itemName, Rarity.EPIC_1, 2)) {
+                    removeItem(itemName, Rarity.EPIC_1, 2);
+                    return new GameItem(itemName, Rarity.EPIC_2);
+                }
+                break;
+            case EPIC_2:
+                if (hasEnoughItem(itemName, Rarity.EPIC_2, 3)) {
+                    removeItem(itemName, Rarity.EPIC_2, 3);
+                    return new GameItem(itemName, Rarity.LEGENDARY);
+                }
+                break;
+            default:
+                System.out.println("NO ENOUGH ITEM TO UPGRADE");
+                break;
+        }
 
-        if (nextRarity != null && hasEnoughItem(itemName, rarity, requiredCount)) {
-            removeItem(itemName, rarity, requiredCount);
-            return new GameItem(itemName, nextRarity);
+        return null;
+    }
+
+
+
+    private GameItem upgradeEpic(String itemName) {
+        if (hasEnoughItem(itemName, Rarity.EPIC, 2)) {
+            removeItem(itemName, Rarity.EPIC, 2);
+            return new GameItem(itemName, Rarity.EPIC_1);
         }
         return null;
     }
+
+    private GameItem upgradeEpic1(String itemName) {
+        if (hasEnoughItem(itemName, Rarity.EPIC_1, 2)) {
+            removeItem(itemName, Rarity.EPIC_1, 2);
+            return new GameItem(itemName, Rarity.EPIC_2);
+        }
+        return null;
+    }
+
 
     public void upgradeMultipleItems(String itemName, Rarity rarity) {
         while (hasEnoughItem(itemName, rarity, 3)) {  // Пока есть 3 предмета нужной редкости
@@ -54,18 +108,6 @@ public class Inventory {
             if (upgradedItem != null) {
                 addItem(upgradedItem);
             }
-        }
-    }
-
-    private Rarity getNextRarity(Rarity current) {
-        switch (current) {
-            case COMMON: return Rarity.GREAT;
-            case GREAT: return Rarity.RARE;
-            case RARE: return Rarity.EPIC;
-            case EPIC: return Rarity.EPIC_1;
-            case EPIC_1: return Rarity.EPIC_2;
-            case EPIC_2: return Rarity.LEGENDARY;
-            default: return null;
         }
     }
 
@@ -81,65 +123,25 @@ public class Inventory {
 }
 
 //    public GameItem upgradeItem(String itemName, Rarity rarity) {
-//        switch (rarity) {
-//            case COMMON:
-//                if (hasEnoughItem(itemName, Rarity.COMMON, 3)) {
-//                    removeItem(itemName, Rarity.COMMON, 3);
-//                    return new GameItem(itemName, Rarity.GREAT);
-//                }
-//                break;
-//            case GREAT:
-//                if (hasEnoughItem(itemName, Rarity.GREAT, 3)) {
-//                    removeItem(itemName, Rarity.GREAT, 3);
-//                    return new GameItem(itemName, Rarity.RARE);
-//                }
-//                break;
-//            case RARE:
-//                if (hasEnoughItem(itemName, Rarity.RARE, 3)) {
-//                    removeItem(itemName, Rarity.RARE, 3);
-//                    return new GameItem(itemName, Rarity.EPIC);
-//                }
-//                break;
-//            case EPIC:
-//                if (hasEnoughItem(itemName, Rarity.EPIC, 2)) {
-//                    removeItem(itemName, Rarity.EPIC, 2);
-//                    return new GameItem(itemName, Rarity.EPIC_1);
-//                }
-//                break;
-//            case EPIC_1:
-//                if (hasEnoughItem(itemName, Rarity.EPIC_1, 2)) {
-//                    removeItem(itemName, Rarity.EPIC_1, 2);
-//                    return new GameItem(itemName, Rarity.EPIC_2);
-//                }
-//                break;
-//            case EPIC_2:
-//                if (hasEnoughItem(itemName, Rarity.EPIC_2, 3)) {
-//                    removeItem(itemName, Rarity.EPIC_2, 3);
-//                    return new GameItem(itemName, Rarity.LEGENDARY);
-//                }
-//                break;
-//            default:
-//                System.out.println("NO ENOUGH ITEM TO UPGRADE");
-//                break;
-//        }
+//        Rarity nextRarity = getNextRarity(rarity);
+//        int requiredCount = (rarity == Rarity.EPIC || rarity == Rarity.EPIC_1) ? 2 : 3;
 //
-//        return null;
-//    }
-
-
-
-//    private GameItem upgradeEpic(String itemName) {
-//        if (hasEnoughItem(itemName, Rarity.EPIC, 2)) {
-//            removeItem(itemName, Rarity.EPIC, 2);
-//            return new GameItem(itemName, Rarity.EPIC_1);
+//        if (nextRarity != null && hasEnoughItem(itemName, rarity, requiredCount)) {
+//            removeItem(itemName, rarity, requiredCount);
+//            return new GameItem(itemName, nextRarity);
 //        }
 //        return null;
 //    }
 //
-//    private GameItem upgradeEpic1(String itemName) {
-//        if (hasEnoughItem(itemName, Rarity.EPIC_1, 2)) {
-//            removeItem(itemName, Rarity.EPIC_1, 2);
-//            return new GameItem(itemName, Rarity.EPIC_2);
+//
+//    private Rarity getNextRarity(Rarity current) {
+//        switch (current) {
+//            case COMMON: return Rarity.GREAT;
+//            case GREAT: return Rarity.RARE;
+//            case RARE: return Rarity.EPIC;
+//            case EPIC: return Rarity.EPIC_1;
+//            case EPIC_1: return Rarity.EPIC_2;
+//            case EPIC_2: return Rarity.LEGENDARY;
+//            default: return null;
 //        }
-//        return null;
 //    }
